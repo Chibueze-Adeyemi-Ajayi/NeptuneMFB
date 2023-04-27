@@ -77,8 +77,8 @@ export default class {
                         });
                         if (medication) {
                             result.push(medication)
-                        } else res.status(403).json({"message": "Unexpected error, finding the load"});
-                    } else res.status(403).json({"message": "Unexpected error, finding the dispatch"});
+                        } else {res.status(403).json({"message": "This drone is empty"}); return}
+                    } else {res.status(403).json({"message": "This drone is idle, no load yet"}); return}
                 }
                 res.status(200).json({
                     "message": "Successful",
@@ -99,7 +99,7 @@ export default class {
                 res.status(200).json({
                     "message": "Successful",
                     "data": req.middleWareResponse.data
-                });
+                }); return;
             } else { // drone missing
                 res.status(404).json({"message": `No drone ${body.state} for now`});
             }
@@ -113,7 +113,7 @@ export default class {
             if (req.middleWareResponse.status) {
                 var data : IDrone = req.middleWareResponse.other;
                 res.json({
-                    "message" : "Battery Level: " + data,
+                    "message" : "Battery Level: " + data.batteryCapacity,
                     "data" : data.batteryCapacity
                 });
             } else {

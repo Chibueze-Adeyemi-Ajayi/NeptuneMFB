@@ -7,8 +7,8 @@ POST  http://localhost:5000/drone/add/
 content-type: application/json
 
 {
-    "model": "x1-750AB", "serial_number": "787899006",
-    "weight_limit": 100, "battery_capacity": "700mAh",
+    "model": "1234567890", "serial_number": "0987654321",
+    "weight_limit": "56", "battery_capacity": 85,
     "state": "IDLE"
 }
 
@@ -17,8 +17,8 @@ POST  http://localhost:5000/medication/add/
 content-type: application/json
 
 {
-    "name": "Arthemeter", "weight": 2500.05,
-    "code": "#123450", "image": "URL"
+    "name": "Lumerthem", "weight": 2500.05,
+    "code": "0x1237450", "image": "URL"
 }
 
 ### dispatching a drone
@@ -26,7 +26,7 @@ POST  http://localhost:5000/drone/load/
 content-type: application/json
 
 {
-   "serial_number": "787899006", "load_id": 2
+   "serial_number": "2341234", "load_id": "4"
 }
 
 ### checking loaded drone items

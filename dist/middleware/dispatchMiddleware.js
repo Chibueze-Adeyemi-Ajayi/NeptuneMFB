@@ -14,13 +14,19 @@ const droneModel_1 = require("../models/droneModel");
 const sequelize_1 = require("sequelize");
 const util_1 = require("util");
 const drone_states_1 = require("../types/drone-states");
+const validator_1 = require("../validator/validator");
 class dispatchMiddleware {
     // valiadete drone to load drone to the database : Async middleware
     validateLoadingDrone(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             var body = req.body;
-            var model = body.model, serial_number = body.serial_number, state = body.state;
-            var weight_limit = body.weight_limit, battery_capacity = body.battery_capacity;
+            // validation
+            var validator = (0, validator_1.validateLoadDroneData)(body);
+            if (validator.error) {
+                res.status(403).json({ "maessage": "Your data are invalid" });
+                return;
+            }
+            var serial_number = body.serial_number;
             // check if the drone exists, it's idle, battery is > 25%;
             try {
                 var drone = yield droneModel_1.Drone.findAll({

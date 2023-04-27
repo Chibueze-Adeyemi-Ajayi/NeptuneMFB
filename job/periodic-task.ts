@@ -1,7 +1,6 @@
 import { log } from 'console';
 import { scheduleJob, Job } from 'node-schedule';
 import { History } from '../models/droneBatteryHistoryModel';
-import { Drone } from '../models/droneModel';
 
 // Assumption is made here that there is a remote connection IOT
 // with the dispatching loading thereby, returning it's current battery level

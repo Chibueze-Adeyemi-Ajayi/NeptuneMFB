@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const console_1 = require("console");
 const droneModel_1 = require("../models/droneModel");
+const validator_1 = require("../validator/validator");
 // drone middleware class
 class droneMiddleWare {
     // default middleware
@@ -21,6 +22,14 @@ class droneMiddleWare {
     // valiadete added drone to the database : Async middleware
     validateNewDrone(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
+            // validate the input data 
+            const valid = (0, validator_1.validateDroneDetails)(req.body);
+            if (valid.error) {
+                res.status(401).json({
+                    "message": "Invalid inputs"
+                });
+                return;
+            }
             var body = req.body;
             var serial_number = body.serial_number;
             // check if the serial hasn't been in use by another drone
@@ -44,6 +53,12 @@ class droneMiddleWare {
     // select all drones in a particular state
     getDronesByState(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
+            if ((0, validator_1.validateDroneStateData)(req.body).error) {
+                res.status(403).json({
+                    "message": "Invalid inputs"
+                });
+                return;
+            }
             try {
                 const state = req.body.state;
                 var drones = yield droneModel_1.Drone.findAll({
@@ -63,6 +78,14 @@ class droneMiddleWare {
     getDroneBySerialNumber(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                // validate serial number
+                var validate = (0, validator_1.validateDroneSerialNumber)(req.body);
+                if (validate.error) {
+                    res.status(403).json({
+                        "message": "Invalid inputs"
+                    });
+                    return;
+                }
                 var serial_number = req.body.serial_number;
                 const drone = yield droneModel_1.Drone.findOne({
                     where: { serialnumber: serial_number }

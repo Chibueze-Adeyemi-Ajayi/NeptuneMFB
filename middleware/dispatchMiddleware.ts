@@ -4,6 +4,7 @@ import { Drone } from "../models/droneModel";
 import { Op } from "sequelize";
 import { isArray } from "util";
 import { DroneState } from "../types/drone-states";
+import { validateLoadDroneData } from "../validator/validator";
 
 interface DroneAddInterface {
     model:string, serial_number:string,
@@ -16,11 +17,17 @@ export class dispatchMiddleware {
     // valiadete drone to load drone to the database : Async middleware
     public async validateLoadingDrone (req:Request, res:Response, next:any) : Promise<void> {
 
-        var body:DroneAddInterface = req.body;
+        var body = req.body;
 
-        var model:string = body.model, serial_number = body.serial_number, state = body.state;
-        var weight_limit:number = body.weight_limit, battery_capacity = body.battery_capacity; 
-        
+        // validation
+        var validator = validateLoadDroneData(body);
+
+        if (validator.error) {
+          res.status(403).json({"maessage": "Your data are invalid"});
+          return;
+        }
+
+        var serial_number:string = body.serial_number;
         // check if the drone exists, it's idle, battery is > 25%;
         try {
 

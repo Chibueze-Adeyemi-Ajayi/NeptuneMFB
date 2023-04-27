@@ -1,6 +1,7 @@
 import { log } from "console";
 import { Request, Response } from "express";
 import { Drone } from "../models/droneModel";
+import { validateDroneDetails, validateDroneSerialNumber, validateDroneStateData } from "../validator/validator";
 
 
 interface DroneAddInterface {
@@ -21,6 +22,12 @@ class droneMiddleWare {
     // valiadete added drone to the database : Async middleware
     public async validateNewDrone (req:Request, res:Response, next:any) : Promise<void> {
 
+        // validate the input data 
+        const valid = validateDroneDetails(req.body);
+        if (valid.error) {res.status(401).json({
+            "message": "Invalid inputs"
+        }); return}
+        
         var body:DroneAddInterface = req.body;
 
         var serial_number = body.serial_number;
@@ -46,6 +53,12 @@ class droneMiddleWare {
 
     // select all drones in a particular state
     async getDronesByState (req:Request, res:Response, next:any) : Promise<void> {
+        if (validateDroneStateData(req.body).error){
+            res.status(403).json({
+                "message": "Invalid inputs"
+            });
+            return;
+        }
         try {
             
             const state:string = req.body.state;
@@ -69,6 +82,14 @@ class droneMiddleWare {
     // getting the drone by ID
     async getDroneBySerialNumber(req:Request, res:Response, next:any) : Promise<void> {
         try {
+            // validate serial number
+            var validate = validateDroneSerialNumber(req.body);
+            if (validate.error) {
+                res.status(403).json({
+                    "message": "Invalid inputs"
+                });
+                return
+            }
             var serial_number = req.body.serial_number;
             const drone = await Drone.findOne({
                 where : {serialnumber : serial_number}

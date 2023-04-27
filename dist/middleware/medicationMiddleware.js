@@ -12,11 +12,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.mediacationMiddleware = void 0;
 const console_1 = require("console");
 const medicationModel_1 = require("../models/medicationModel");
+const validator_1 = require("../validator/validator");
 class mediacationMiddleware {
     // check if the medication doesn't exist
     validateMedication(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                // validate medication data input
+                var validate = (0, validator_1.validateMedicationdata)(req.body);
+                if (validate.error) {
+                    res.status(403).json({
+                        message: "Your medication data is invalid"
+                    });
+                    return;
+                }
                 var code = req.body.code; // find by code
                 var medication = yield medicationModel_1.MedicationModel.findOne({
                     where: { code: code } // clause
