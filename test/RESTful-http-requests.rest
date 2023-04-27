@@ -1,0 +1,55 @@
+
+### default get rest
+GET http://localhost:5000/
+
+### adding drone to database
+POST  http://localhost:5000/drone/add/
+content-type: application/json
+
+{
+    "model": "x1-750AB", "serial_number": "787899006",
+    "weight_limit": 100, "battery_capacity": "700mAh",
+    "state": "IDLE"
+}
+
+### adding a medication load
+POST  http://localhost:5000/medication/add/
+content-type: application/json
+
+{
+    "name": "Arthemeter", "weight": 2500.05,
+    "code": "#123450", "image": "URL"
+}
+
+### dispatching a drone
+POST  http://localhost:5000/drone/load/
+content-type: application/json
+
+{
+   "serial_number": "787899006", "load_id": 2
+}
+
+### checking loaded drone items
+POST  http://localhost:5000/drone/items/
+content-type: application/json
+
+{
+   "state": "LOADED"
+}
+
+### checking drones by current state
+POST  http://localhost:5000/drone/list/
+content-type: application/json
+
+{
+   "state": "IDLE"
+}
+
+
+### get drone battery level
+POST  http://localhost:5000/drone/battery/
+content-type: application/json
+
+{
+   "serial_number": "12345678"
+}
